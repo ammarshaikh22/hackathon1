@@ -4,7 +4,7 @@ const ProductsDescriptions = () => {
     return (
         <section className='my-20 py-20 bg-[#F9F8FE]'>
             <div className='max-w-[84%] mx-auto'>
-                <Tabs defaultValue="details" className="w-full">
+                <Tabs defaultValue="description" className="w-full">
                     <TabsList className='mb-6 ml-6'>
                         <TabsTrigger value="description">Description</TabsTrigger>
                         <TabsTrigger value="description">Reviews</TabsTrigger>

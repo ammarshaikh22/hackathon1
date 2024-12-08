@@ -41,7 +41,9 @@ const Header = () => {
                                 <SelectItem value="light">PKR</SelectItem>
                             </SelectContent>
                         </Select>
-                        <p>Login</p>
+                        <Link href='/login'>
+                            <p>Login</p>
+                        </Link>
                         <p>WishList</p>
                         <ShoppingCartIcon />
                     </div>
@@ -89,6 +91,7 @@ const Header = () => {
                                         <div className='flex justify-between items-center flex-col gap-10 my-20 text-white'>
                                             <div>
                                                 <span className='font-bold text-2xl'>Hekto</span>
+
                                             </div>
                                             <div>
                                                 <ul className='flex items-center gap-6 flex-col'>
@@ -98,6 +101,7 @@ const Header = () => {
                                                     <Link href='/blog' onClick={() => setOpen(!open)}><li className='text-base'>Blog</li></Link>
                                                     <Link href='/shop' onClick={() => setOpen(!open)}><li className='text-base'>Shop</li></Link>
                                                     <Link href='/contact' onClick={() => setOpen(!open)}><li className='text-base'>Contact</li></Link>
+                                                    <Link href='/login' onClick={() => setOpen(!open)}><li className='text-base'>Login</li></Link>
                                                 </ul>
                                             </div>
                                             <div className='flex justify-between items-center gap-6 flex-col'>
