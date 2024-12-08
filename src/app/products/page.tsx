@@ -1,6 +1,8 @@
 import Heading from '@/components/Heading'
+import Logos from '@/components/Logos'
 import Products from '@/components/Products'
 import ProductsDescriptions from '@/components/ProductsDescriptions'
+import RelatedProducts from '@/components/RelatedProducts'
 import React from 'react'
 
 const ProductsPage = () => {
@@ -9,6 +11,8 @@ const ProductsPage = () => {
             <Heading heading='Product Details' />
             <Products />
             <ProductsDescriptions />
+            <RelatedProducts />
+            <Logos />
         </main>
     )
 }
