@@ -1,20 +1,52 @@
+'use client'
+import { client } from '@/sanity/client'
 import Image from 'next/image'
-import React from 'react'
-
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+const query = `*[_type == 'newProducts']{
+    _id,
+      name,
+        "image":image.asset->url,
+        price
+    }[17...21]`
+const query2 = `*[_type == 'newProducts']{
+    _id,
+      name,
+        "image":image.asset->url,
+        price
+    }[17...21]`
 const TrendingProducts = () => {
+    const [data, setData] = useState([])
+    const [data2, setData2] = useState([])
+    useEffect(() => {
+        const getdata = async () => {
+            const data = await client.fetch(query)
+            setData(data)
+        }
+        getdata()
+        const getdata2 = async () => {
+            const data = await client.fetch(query2)
+            setData2(data)
+        }
+        getdata2()
+    }, [])
     return (
         <section className='my-20 relative'>
             <div className='max-w-[84%] mx-auto'>
                 <h2 className='md:text-3xl text-2xl font-bold text-center'>Trending Products</h2>
                 <div className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-10'>
                     {
-                        Array.from({ length: 4 }).map((_, index) => (
-                            <div className='col-span-1 shadow-2xl p-2 pb-6 flex items-center flex-col gap-2' key={index}>
-                                <div className='bg-[#F6F7FB] w-full py-4 flex justify-center'>
-                                    <Image src='/chair2.png' width={200} height={200} alt='image' />
+                        data.map((item: { _id: string; name: string; image: string; price: number }, index) => (
+                            <div className='col-span-1 shadow-2xl pb-6 flex items-center flex-col gap-2' key={index}>
+                                <div className='bg-[#F6F7FB] w-full py-4 flex justify-center h-[200px]'>
+                                    <Image src={item.image} width={200} height={200} alt='image' className='object-cover' />
                                 </div>
-                                <h3 className='text-xl text-[#FB2E86]'>Cantilever chair</h3>
-                                <span className='text-sm'>$42.00</span>
+                                <Link href={`/shop/${item._id}`}>
+                                    <div className='p-3 flex flex-col gap-2 items-center'>
+                                        <h3 className='text-xl text-[#FB2E86] line-clamp-1'>{item.name}</h3>
+                                        <span className='text-sm'>{item.price + ' $'}</span>
+                                    </div>
+                                </Link>
                             </div>
                         ))
                     }
@@ -38,15 +70,17 @@ const TrendingProducts = () => {
                     </div>
                     <div className='md:w-[30%] w-full flex flex-col gap-6'>
                         {
-                            Array.from({ length: 3 }).map((_, index) => (
+                            data2.map((item: { _id: string; name: string; image: string; price: number }, index) => (
                                 <div className='flex gap-2 items-center' key={index}>
-                                    <div className='bg-[#F5F6F8] px-2'>
-                                        <Image src='/chair3.png' width={60} height={60} alt='image' />
+                                    <div className='bg-[#F5F6F8] px-2 h-[60px]'>
+                                        <Image src={item.image} width={60} height={60} alt='image' />
                                     </div>
-                                    <div className='flex flex-col gap-1 items-start'>
-                                        <span className='text-sm'>Executive Seat chair</span>
-                                        <span className='text-sm'>$32.00</span>
-                                    </div>
+                                    <Link href={`/shop/${item._id}`}>
+                                        <div className='flex flex-col gap-1 items-start'>
+                                            <span className='text-sm line-clamp-1'>{item.name}</span>
+                                            <span className='text-sm'>{item.price + ' $'}</span>
+                                        </div>
+                                    </Link>
                                 </div>
                             ))
                         }

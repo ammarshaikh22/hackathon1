@@ -11,7 +11,7 @@ import UniqueFeatures from "@/components/UniqueFeatures";
 import WhatShopexOffer from "@/components/WhatShopexOffer";
 export default function Home() {
   return (
-    <main>
+    <main className="">
       <Banner />
       <FeaturedProducts />
       <LeatestProducts />
