@@ -36,111 +36,111 @@ const CheckoutPage = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            schema.parse(formData);
-            setError('');
-            setLoading(true);
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         schema.parse(formData);
+    //         setError('');
+    //         setLoading(true);
 
-            // 1. Fetch shipping rates from ShipEngine API
-            const response = await fetch('/api/shipengine/get-rates', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    shipToAddress: {
-                        name: formData.fullName,
-                        phone: formData.phone,
-                        addressLine1: formData.address,
-                        cityLocality: formData.city,
-                        postalCode: formData.postalCode,
-                        countryCode: formData.country,
-                        addressResidentialIndicator: 'yes',
-                    },
-                    packages: cart.map((item: any) => ({
-                        weight: { value: item.weight || 1, unit: 'ounce' },
-                        dimensions: {
-                            height: item.height || 5,
-                            width: item.width || 5,
-                            length: item.length || 5,
-                            unit: 'inch',
-                        },
-                    })),
-                }),
-            });
+    //         // 1. Fetch shipping rates from ShipEngine API
+    //         const response = await fetch('/api/shipengine/get-rates', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 shipToAddress: {
+    //                     name: formData.fullName,
+    //                     phone: formData.phone,
+    //                     addressLine1: formData.address,
+    //                     cityLocality: formData.city,
+    //                     postalCode: formData.postalCode,
+    //                     countryCode: formData.country,
+    //                     addressResidentialIndicator: 'yes',
+    //                 },
+    //                 packages: cart.map((item: any) => ({
+    //                     weight: { value: item.weight || 1, unit: 'ounce' },
+    //                     dimensions: {
+    //                         height: item.height || 5,
+    //                         width: item.width || 5,
+    //                         length: item.length || 5,
+    //                         unit: 'inch',
+    //                     },
+    //                 })),
+    //             }),
+    //         });
 
-            const data = await response.json();
-            const shippingRates = data.rates || [];
+    //         const data = await response.json();
+    //         const shippingRates = data.rates || [];
 
-            if (!shippingRates.length) {
-                console.log('No shipping rates available');
-            }
-            setSelectedRateId(shippingRates[0]?.rateId); 
-            setLoading(false);
+    //         if (!shippingRates.length) {
+    //             console.log('No shipping rates available');
+    //         }
+    //         setSelectedRateId(shippingRates[0]?.rateId); 
+    //         setLoading(false);
 
-            // 2. Save shipment to Sanity
-            const saveShipmentResponse = await fetch('/api/shipengine/save-shipment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    recipient: formData,
-                    packages: cart,
-                    rates: shippingRates,
-                }),
-            });
+    //         // 2. Save shipment to Sanity
+    //         const saveShipmentResponse = await fetch('/api/shipengine/save-shipment', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 recipient: formData,
+    //                 packages: cart,
+    //                 rates: shippingRates,
+    //             }),
+    //         });
 
-            const saveShipmentData = await saveShipmentResponse.json();
-            if (!saveShipmentData._id) {
-                console.log('Failed to save shipment to Sanity');
-            }
+    //         const saveShipmentData = await saveShipmentResponse.json();
+    //         if (!saveShipmentData._id) {
+    //             console.log('Failed to save shipment to Sanity');
+    //         }
 
-            // 3. Create shipping label
-            const createLabelResponse = await fetch('/api/shipengine/create-label', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ rateId: selectedRateId }),
-            });
+    //         // 3. Create shipping label
+    //         const createLabelResponse = await fetch('/api/shipengine/create-label', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ rateId: selectedRateId }),
+    //         });
 
-            const createLabelData = await createLabelResponse.json();
-            console.log(createLabelData);
-            setLabelData(createLabelData);
+    //         const createLabelData = await createLabelResponse.json();
+    //         console.log(createLabelData);
+    //         setLabelData(createLabelData);
 
-            // Save label data to Sanity
-            await fetch('/api/shipengine/save-label', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    labelId: createLabelData.labelId,
-                    trackingNumber: createLabelData.trackingNumber,
-                    labelUrl: createLabelData.labelUrl,
-                }),
-            });
+    //         // Save label data to Sanity
+    //         await fetch('/api/shipengine/save-label', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 labelId: createLabelData.labelId,
+    //                 trackingNumber: createLabelData.trackingNumber,
+    //                 labelUrl: createLabelData.labelUrl,
+    //             }),
+    //         });
 
-            // 4. Track shipment
-            const trackShipmentResponse = await fetch(`/api/shipengine/track-shipment/${createLabelData.labelId}`, {
-                method: 'GET',
-            });
+    //         // 4. Track shipment
+    //         const trackShipmentResponse = await fetch(`/api/shipengine/track-shipment/${createLabelData.labelId}`, {
+    //             method: 'GET',
+    //         });
 
-            const trackShipmentData = await trackShipmentResponse.json();
-            setTrackingInfo(trackShipmentData);
+    //         const trackShipmentData = await trackShipmentResponse.json();
+    //         setTrackingInfo(trackShipmentData);
 
-            // Save tracking data to Sanity
-            await fetch('/api/shipengine/save-tracking', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    labelId: createLabelData.labelId,
-                    status: trackShipmentData.status,
-                    details: trackShipmentData.details,
-                }),
-            });
+    //         // Save tracking data to Sanity
+    //         await fetch('/api/shipengine/save-tracking', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 labelId: createLabelData.labelId,
+    //                 status: trackShipmentData.status,
+    //                 details: trackShipmentData.details,
+    //             }),
+    //         });
 
-        } catch (err: any) {
-            setError(err.message || 'An error occurred.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    //     } catch (err: any) {
+    //         setError(err.message || 'An error occurred.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-6 lg:px-12">
@@ -148,7 +148,7 @@ const CheckoutPage = () => {
                 <h1 className="text-3xl font-bold text-center text-[#1D3178] mb-8">
                     Billing Information
                 </h1>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form className="space-y-6">
                     {error && <p className="text-red-500 text-sm">{error}</p>}
                     {Object.keys(formData).map((key) => (
                         <div key={key}>
