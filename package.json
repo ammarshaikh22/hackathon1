@@ -30,6 +30,7 @@
     "react-dom": "^18",
     "react-star-ratings": "^2.3.0",
     "sanity": "^3.68.3",
+    "shipengine": "^1.0.7",
     "sonner": "^1.7.1",
     "styled-components": "^6.1.13",
     "tailwind-merge": "^2.5.5",

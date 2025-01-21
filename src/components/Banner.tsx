@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from './ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Banner = () => {
     return (
@@ -18,7 +19,9 @@ const Banner = () => {
                         </h1>
                         <p className='text-sm'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna in est adipiscing
                             in phasellus non in justo.</p>
-                        <Button size={"lg"} variant={"secondary"} >Shop Now</Button>
+                        <Link href='/shop'>
+                            <Button size={"lg"} variant={"secondary"}  >Shop Now</Button>
+                        </Link>
                     </div>
                     <div>
                         <Image src='/banner.png' width={500} height={500} alt='image' />
