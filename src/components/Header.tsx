@@ -14,13 +14,15 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 import { client } from '@/sanity/client';
+import axios from 'axios';
 
 const Header = () => {
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [islogin, setIslogin] = useState<boolean | undefined>(undefined)
+    console.log(islogin)
     const query = (term: string) => `*[_type == 'newProducts' && name match '${term}*']{
         _id,
         name,
@@ -44,7 +46,21 @@ const Header = () => {
             setData([]);
         }
     }, [searchTerm]);
-
+    useEffect(() => {
+        const getUser = async () => {
+            const res = await axios.get('/api/users/profile')
+            setIslogin(res.data.user?.isLogin)
+        }
+        getUser()
+    }, [islogin])
+    const logout = async () => {
+        try {
+            await axios.post('/api/users/logout')
+            setIslogin(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <header className='relative z-10'>
             <div className='lg:block hidden py-2 bg-[#7E33E0]'>
@@ -72,9 +88,11 @@ const Header = () => {
                                 <SelectItem value="light">PKR</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Link href='/login'>
-                            <p>Login</p>
-                        </Link>
+                        {
+                            islogin ? <p className='cursor-pointer' onClick={logout}>Logout</p> : <Link href='/login'>
+                                <p className='cursor-pointer'>Login</p>
+                            </Link>
+                        }
                         <p>WishList</p>
                         <Link href='/cart' className='cursor-pointer'>
                             <ShoppingCartIcon />

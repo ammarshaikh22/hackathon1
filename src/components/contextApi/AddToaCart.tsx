@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
@@ -19,7 +20,7 @@ interface CartContextProps {
 }
 
 // Create the context with default values
-const CartContext = createContext<CartContextProps | undefined>(undefined);
+const CartContext = createContext<any | undefined>(undefined);
 
 // Create a provider component
 interface CartProviderProps {
