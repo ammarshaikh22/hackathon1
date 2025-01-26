@@ -12,3 +12,4 @@ export const getDataUser = async (req: NextRequest) => {
         console.log(error.message);
     }
 }
+//hide
